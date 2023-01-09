@@ -21,7 +21,7 @@ class CreateAccountView extends StatelessWidget with $CreateAccountView {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<CreateAccountModel>.reactive(
-      onModelReady: ((model) => listenToFormUpdated(model)),
+      onModelReady: ((model) => syncFormWithViewModel(model)),
       onDispose: (_) => disposeForm(),
       builder: (context, model, child) => SafeArea(
         top: false,
@@ -55,58 +55,81 @@ class CreateAccountView extends StatelessWidget with $CreateAccountView {
                 padding: const EdgeInsets.symmetric(
                   horizontal: 32.0,
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    verticalSpaceSmall,
-                    Text(
-                      "Complete the details to create an account and get started with cryptowallet",
-                      style: GoogleFonts.montserrat(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 12.5,
-                        height: 1.5,
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // verticalSpaceSmall,
+                          Text(
+                            "Complete the details to create an account and get started with cryptowallet",
+                            style: GoogleFonts.montserrat(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 12.5,
+                              height: 1.5,
+                            ),
+                          ),
+                          verticalSpaceSmall,
+                          InputField(
+                            labelText: "Game ID",
+                            hintText: "Enter a unique ID",
+                            kPadding: 0.0,
+                            // suffixIcon: true,
+                            // autoFocus: true,
+                            inputController: gamerIdController,
+                            hasValidationMessage:
+                                model.hasGamerIdValidationMessage,
+                            validationMessage: model.hasGamerIdValidationMessage
+                                ? model.gamerIdValidationMessage
+                                : null,
+                          ),
+                          verticalSpaceMicroSmall,
+                          InputField(
+                            labelText: "Email",
+                            hintText: "Enter email address",
+                            kPadding: 0.0,
+                            // autoFocus: true,
+                            // suffixIcon: true,
+                            inputController: gamerEmailController,
+                            hasValidationMessage:
+                                model.hasGamerEmailValidationMessage,
+                            validationMessage:
+                                model.hasGamerEmailValidationMessage
+                                    ? model.gamerEmailValidationMessage
+                                    : null,
+                          ),
+                        ],
                       ),
-                    ),
-                    verticalSpaceSmall,
-                    InputField(
-                      labelText: "Game ID",
-                      hintText: "Enter a unique ID",
-                      kPadding: 0.0,
-                      // suffixIcon: true,
-                      // autoFocus: true,
-                      inputController: gamerIdController,
-                    ),
-                    verticalSpaceMicroSmall,
-                    InputField(
-                      labelText: "Email",
-                      hintText: "Enter email address",
-                      kPadding: 0.0,
-                      // autoFocus: true,
-                      // suffixIcon: true,
-                      inputController: gamerEmailController,
-                    ),
-                    verticalSpaceMini,
-                    Text(
-                      "By signing up, you agree to Cryptowatch Terms and Privacy Policy and we ensure your data is safe and secure",
-                      style: GoogleFonts.montserrat(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 12.5,
-                        height: 1.5,
+                      Column(
+                        children: [
+                          Text(
+                            "By signing up, you agree to Cryptowatch Terms and Privacy Policy and we ensure your data is safe and secure",
+                            style: GoogleFonts.montserrat(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 12.5,
+                              height: 1.5,
+                            ),
+                          ),
+                          verticalSpaceMicroSmall,
+                          AppButton(
+                            backgroundColor: kPrimaryColor,
+                            title: 'Next',
+                            height: 45,
+                            width: double.infinity,
+                            disabled: model.disableCreateButton,
+                            isBusy: model.isBusy,
+                            onTap: model.onNextButton,
+                          ),
+                          verticalSpaceSmall,
+                          verticalSpaceLarge,
+                        ],
                       ),
-                    ),
-                    verticalSpaceSmall,
-                    AppButton(
-                      backgroundColor: kPrimaryColor,
-                      title: 'Done',
-                      height: 45,
-                      width: double.infinity,
-                      // disabled: model.disableCreateButton,
-                      isBusy: model.isBusy,
-                      onTap: model.goToCreatePin,
-                    ),
-                    // verticalSpaceMassive,
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

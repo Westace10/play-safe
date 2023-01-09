@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:play_safe/app/app.locator.dart';
 import 'package:play_safe/app/app.router.dart';
-import 'package:play_safe/core/services/api_services.dart';
 import 'package:play_safe/core/services/app_theme_service.dart';
+import 'package:play_safe/core/services/coinbase_services.dart';
+import 'package:play_safe/core/services/local_storage/local_storage_service.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:stacked_themes/stacked_themes.dart';
 
@@ -11,7 +13,8 @@ void main() async {
   await setupLocator();
   await ThemeManager.initialise();
   await configureCoinbase();
-  // await openHiveBoxes();
+  await dotenv.load(fileName: "lib/.env");
+  await openHiveBoxes();
   runApp(const MyApp());
 }
 

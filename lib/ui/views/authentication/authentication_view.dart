@@ -7,23 +7,27 @@ import 'package:play_safe/ui/shared/colors.dart';
 import 'package:play_safe/ui/shared/edge_insets.dart';
 import 'package:play_safe/ui/shared/spacing.dart';
 import 'package:play_safe/ui/views/authentication/authentication_viewmodel.dart';
-import 'package:play_safe/ui/widgets/app_spinner.dart';
+import 'package:play_safe/ui/views/authentication/authentication_view.form.dart';
+import 'package:play_safe/ui/widgets/app_button.dart';
 import 'package:play_safe/ui/widgets/custom_keyboard.dart';
+import 'package:play_safe/ui/widgets/text_field.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
 
 @FormView(
   fields: [
+    FormTextField(name: 'newGamerEmail'),
     FormTextField(name: 'pinValue'),
   ],
 )
-class AuthenticationView extends StatelessWidget {
-  const AuthenticationView({Key? key}) : super(key: key);
+class AuthenticationView extends StatelessWidget with $AuthenticationView {
+  AuthenticationView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<AuthenticationViewModel>.reactive(
-      // onModelReady: (model) => model.init(),
+      onModelReady: ((model) => syncFormWithViewModel(model)),
+      onDispose: (_) => disposeForm(),
       builder: (context, model, child) => SafeArea(
         top: false,
         bottom: false,
@@ -60,7 +64,20 @@ class AuthenticationView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    verticalSpaceSmall,
+                    InputField(
+                      labelText: "Game ID",
+                      hintText: "Enter a unique ID",
+                      kPadding: 0.0,
+                      // suffixIcon: true,
+                      // autoFocus: true,
+                      inputController: newGamerEmailController,
+                      hasValidationMessage:
+                          model.hasNewGamerEmailValidationMessage,
+                      validationMessage: model.hasNewGamerEmailValidationMessage
+                          ? model.newGamerEmailValidationMessage
+                          : null,
+                    ),
+                    verticalSpaceMicroSmall,
                     Text(
                       "Enter your 6-digit pin to access your account",
                       style: GoogleFonts.montserrat(
@@ -69,7 +86,7 @@ class AuthenticationView extends StatelessWidget {
                         height: 1.5,
                       ),
                     ),
-                    verticalSpaceLarge,
+                    verticalSpaceSmall,
                     Center(
                       child: Padding(
                         padding: kEdgeInsetsHorizontalMini,
@@ -99,7 +116,7 @@ class AuthenticationView extends StatelessWidget {
                                     borderRadius: miniBorderRadius,
                                   ),
                           ),
-                          onCompleted: (pin) => model.goToDash(),
+                          onCompleted: (pin) => model.onCompleted(pin.length),
                           onChanged: (value) => model.onCompleted(value.length),
                         ),
                       ),
@@ -112,12 +129,16 @@ class AuthenticationView extends StatelessWidget {
                       visibility: model.onShow,
                     ),
                     verticalSpaceSmall,
-                    model.isBusy
-                        ? const AppSpinner(
-                            color: kWhiteColor,
-                            size: 24,
+                    model.pinFilled
+                        ? AppButton(
+                            backgroundColor: kPrimaryColor,
+                            title: 'Login',
+                            height: 45,
+                            width: double.infinity,
+                            isBusy: model.isBusy,
+                            onTap: (() => model.onLogin()),
                           )
-                        : Container()
+                        : Container(),
                   ],
                 ),
               ),

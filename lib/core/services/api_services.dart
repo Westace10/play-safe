@@ -1,29 +1,78 @@
-// import 'package:dio/dio.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:play_safe/app/app.logger.dart';
+import 'package:play_safe/core/contants/network_constants.dart';
 
-// final String API_BASE_URL = 'http://192.168.1.7';
+class APIService {
+  final log = getLogger("APIService");
+  APIService();
 
-// final Dio dio = Dio(
-//   BaseOptions(
-//     baseUrl: API_BASE_URL,
-//     connectTimeout: 5000,
-//     receiveTimeout: 3000,
-//   ),
-// );
+  Future<dynamic> delete(
+    String route,
+    Map<String, List>? body,
+  ) async {
+    log.v("getting data fro $route");
+    var response = await http.patch(
+      Uri.parse(baseUrl + route),
+      headers: headers,
+      body: jsonEncode(body),
+    );
+    log.v("the data fro $route is ${response.body}");
+    return response.body;
+  }
 
-import 'package:coinbase_wallet_sdk/coinbase_wallet_sdk.dart';
-import 'package:coinbase_wallet_sdk/configuration.dart';
+  Future<dynamic> get({
+    required String route,
+    Map<String, String>? queryParameters,
+  }) async {
+    log.v("getting data fro $route");
+    var response = await http.get(
+      Uri.parse(baseUrl + route),
+      headers: headers,
+    );
+    log.v("the data fro $route is ${response.body}");
+    return response.body;
+  }
 
-configureCoinbase() async {
-  // Configure SDK for each platform
-  await CoinbaseWalletSDK.shared.configure(
-    Configuration(
-      ios: IOSConfiguration(
-        host: Uri.parse('https://goerli.ethereum.coinbasecloud.net'),
-        callback: Uri.parse('tribesxyz://mycallback'),
-      ),
-      android: AndroidConfiguration(
-        domain: Uri.parse('https://goerli.ethereum.coinbasecloud.net'),
-      ),
-    ),
-  );
+  Future<dynamic> patch(
+    String route,
+    Map<String, dynamic> body,
+  ) async {
+    log.v("getting data fro $route");
+    var response = await http.patch(
+      Uri.parse(baseUrl + route),
+      headers: headers,
+      body: jsonEncode(body),
+    );
+    log.v("the data fro $route is ${response.body}");
+    return response.body;
+  }
+
+  Future<dynamic> post({
+    required String route,
+    required Map<String, dynamic> body,
+  }) async {
+    log.v("posting $body fro $route");
+    var response = await http.post(
+      Uri.parse(baseUrl + route),
+      headers: headers,
+      body: jsonEncode(body),
+    );
+    log.v("the data fro $route is ${response.body}");
+    return response.body;
+  }
+
+  Future<dynamic> put(
+    String route,
+    Map<String, String> body,
+  ) async {
+    log.v("getting data fro $route");
+    var response = await http.put(
+      Uri.parse(baseUrl + route),
+      headers: headers,
+      body: jsonEncode(body),
+    );
+    log.v("the data fro $route is ${response.body}");
+    return response.body;
+  }
 }

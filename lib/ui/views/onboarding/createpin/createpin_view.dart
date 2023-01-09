@@ -56,74 +56,91 @@ class CreatePinView extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(
                   horizontal: 32.0,
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    verticalSpaceSmall,
-                    Text(
-                      "Complete the details to create an account and get started with cryptowallet",
-                      style: GoogleFonts.montserrat(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 12.5,
-                        height: 1.5,
-                      ),
-                    ),
-                    verticalSpaceLarge,
-                    Center(
-                      child: Padding(
-                        padding: kEdgeInsetsHorizontalMini,
-                        child: Pinput(
-                          controller: model.pinController,
-                          length: pinLength,
-                          obscureText: !model.isShow,
-                          showCursor: false,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          obscuringWidget: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: kpinBorderRadiusColor,
-                              border: Border.all(color: kpinBorderRadiusColor),
-                              borderRadius: miniBorderRadius,
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          verticalSpaceSmall,
+                          Text(
+                            "Complete the details to create an account and get started with cryptowallet",
+                            style: GoogleFonts.montserrat(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 12.5,
+                              height: 1.5,
                             ),
                           ),
-                          defaultPinTheme: PinTheme(
-                            width: 15,
-                            height: 15,
-                            decoration: model.isShow
-                                ? null
-                                : BoxDecoration(
+                          verticalSpaceLarge,
+                          Center(
+                            child: Padding(
+                              padding: kEdgeInsetsHorizontalMini,
+                              child: Pinput(
+                                controller: model.pinController,
+                                length: pinLength,
+                                obscureText: !model.isShow,
+                                showCursor: false,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                obscuringWidget: Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: kpinBorderRadiusColor,
                                     border: Border.all(
                                         color: kpinBorderRadiusColor),
                                     borderRadius: miniBorderRadius,
                                   ),
+                                ),
+                                defaultPinTheme: PinTheme(
+                                  width: 15,
+                                  height: 15,
+                                  decoration: model.isShow
+                                      ? null
+                                      : BoxDecoration(
+                                          border: Border.all(
+                                              color: kpinBorderRadiusColor),
+                                          borderRadius: miniBorderRadius,
+                                        ),
+                                ),
+                                // controller: ,
+                                onCompleted: (pin) =>
+                                    model.onCompleted(pin.length),
+                                onChanged: (value) =>
+                                    model.onCompleted(value.length),
+                              ),
+                            ),
                           ),
-                          // controller: ,
-                          onCompleted: (pin) => model.onCompleted(pin.length),
-                          onChanged: (value) => model.onCompleted(value.length),
-                        ),
+                          verticalSpaceLarge,
+                        ],
                       ),
-                    ),
-                    verticalSpaceLarge,
-                    CustomKeyboard(
-                      isShow: model.isShow,
-                      setter: model.onClick,
-                      backSpace: model.onBackspace,
-                      visibility: model.onShow,
-                    ),
-                    verticalSpaceSmall,
-                    model.pinFilled
-                        ? AppButton(
-                            backgroundColor: kPrimaryColor,
-                            title: 'Continue',
-                            height: 45,
-                            width: double.infinity,
-                            isBusy: model.isBusy,
-                            onTap: (() => model.goToWallet()),
-                          )
-                        : Container(),
-                  ],
+                      Column(
+                        children: [
+                          CustomKeyboard(
+                            isShow: model.isShow,
+                            setter: model.onClick,
+                            backSpace: model.onBackspace,
+                            visibility: model.onShow,
+                          ),
+                          verticalSpaceSmall,
+                          model.pinFilled
+                              ? AppButton(
+                                  backgroundColor: kPrimaryColor,
+                                  title: 'Create account',
+                                  height: 45,
+                                  width: double.infinity,
+                                  isBusy: model.isBusy,
+                                  onTap: (() => model.onNextButton()),
+                                )
+                              : Container(),
+                        ],
+                      ),
+                      verticalSpaceLarge,
+                    ],
+                  ),
                 ),
               ),
             ),

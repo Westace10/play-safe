@@ -51,7 +51,20 @@ dependencies:
   qr_flutter: 
   syncfusion_flutter_charts: 
   coinbase_wallet_sdk: 
-  web_socket_channel: 
+  url_launcher:
+  flutter_dotenv: 
+  intl: 
+  # flutter_web3: ^2.1.9
+  # web 3 integrations
+  #web3dart: 
+  #bip39: 
+  #ed25519_hd_key: 
+  #hex: 
+  
+  #web_socket_channel: 
+  #coinbase_commerce: 
+  #coinbase_exchange: 
+  #flutter_web3: 
 
 dev_dependencies:
   flutter_test:
@@ -82,6 +95,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
+    - lib/.env
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

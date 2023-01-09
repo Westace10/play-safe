@@ -51,6 +51,15 @@ mixin $CreateAccountView on StatelessWidget {
 
   /// Registers a listener on every generated controller that calls [model.setData()]
   /// with the latest textController values
+  void syncFormWithViewModel(FormViewModel model) {
+    gamerIdController.addListener(() => _updateFormData(model));
+    gamerEmailController.addListener(() => _updateFormData(model));
+  }
+
+  /// Registers a listener on every generated controller that calls [model.setData()]
+  /// with the latest textController values
+  @Deprecated('Use syncFormWithViewModel instead.'
+      'This feature was deprecated after 3.1.0.')
   void listenToFormUpdated(FormViewModel model) {
     gamerIdController.addListener(() => _updateFormData(model));
     gamerEmailController.addListener(() => _updateFormData(model));

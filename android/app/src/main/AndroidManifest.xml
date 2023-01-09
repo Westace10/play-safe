@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.play_safe">
+    <queries>
+        <package android:name="org.toshi" />
+  </queries>
    <application
         android:label="play_safe"
         android:name="${applicationName}"

@@ -1,3 +1,5 @@
+import 'package:play_safe/core/services/api_services.dart';
+import 'package:play_safe/core/services/local_storage/persistence_storage_service.dart';
 import 'package:play_safe/ui/views/authentication/authentication_view.dart';
 import 'package:play_safe/ui/views/dashboard/dappspage/dapps_view.dart';
 import 'package:play_safe/ui/views/dashboard/dashboard_view.dart';
@@ -61,9 +63,10 @@ import 'package:stacked_services/stacked_services.dart';
   dependencies: [
     // core services
     LazySingleton(classType: NavigationService),
+    LazySingleton(classType: APIService),
 
     // local storage services
-    // LazySingleton(classType: PersistentStorageService),
+    LazySingleton(classType: PersistentStorageService),
 
     // feature services
     // Presolve(

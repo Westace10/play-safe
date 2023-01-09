@@ -9,6 +9,7 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
+const String NewGamerEmailValueKey = 'newGamerEmail';
 const String PinValueValueKey = 'pinValue';
 
 final Map<String, TextEditingController>
@@ -18,12 +19,17 @@ final Map<String, FocusNode> _AuthenticationViewFocusNodes = {};
 
 final Map<String, String? Function(String?)?>
     _AuthenticationViewTextValidations = {
+  NewGamerEmailValueKey: null,
   PinValueValueKey: null,
 };
 
 mixin $AuthenticationView on StatelessWidget {
+  TextEditingController get newGamerEmailController =>
+      _getFormTextEditingController(NewGamerEmailValueKey);
   TextEditingController get pinValueController =>
       _getFormTextEditingController(PinValueValueKey);
+  FocusNode get newGamerEmailFocusNode =>
+      _getFormFocusNode(NewGamerEmailValueKey);
   FocusNode get pinValueFocusNode => _getFormFocusNode(PinValueValueKey);
 
   TextEditingController _getFormTextEditingController(String key,
@@ -46,7 +52,17 @@ mixin $AuthenticationView on StatelessWidget {
 
   /// Registers a listener on every generated controller that calls [model.setData()]
   /// with the latest textController values
+  void syncFormWithViewModel(FormViewModel model) {
+    newGamerEmailController.addListener(() => _updateFormData(model));
+    pinValueController.addListener(() => _updateFormData(model));
+  }
+
+  /// Registers a listener on every generated controller that calls [model.setData()]
+  /// with the latest textController values
+  @Deprecated('Use syncFormWithViewModel instead.'
+      'This feature was deprecated after 3.1.0.')
   void listenToFormUpdated(FormViewModel model) {
+    newGamerEmailController.addListener(() => _updateFormData(model));
     pinValueController.addListener(() => _updateFormData(model));
   }
 
@@ -61,6 +77,7 @@ mixin $AuthenticationView on StatelessWidget {
     model.setData(
       model.formValueMap
         ..addAll({
+          NewGamerEmailValueKey: newGamerEmailController.text,
           PinValueValueKey: pinValueController.text,
         }),
     );
@@ -72,6 +89,7 @@ mixin $AuthenticationView on StatelessWidget {
   /// Updates the fieldsValidationMessages on the FormViewModel
   void _updateValidationData(FormViewModel model) =>
       model.setValidationMessages({
+        NewGamerEmailValueKey: _getValidationMessage(NewGamerEmailValueKey),
         PinValueValueKey: _getValidationMessage(PinValueValueKey),
       });
 
@@ -103,20 +121,31 @@ mixin $AuthenticationView on StatelessWidget {
 extension ValueProperties on FormViewModel {
   bool get isFormValid =>
       this.fieldsValidationMessages.values.every((element) => element == null);
+  String? get newGamerEmailValue =>
+      this.formValueMap[NewGamerEmailValueKey] as String?;
   String? get pinValueValue => this.formValueMap[PinValueValueKey] as String?;
 
+  bool get hasNewGamerEmail =>
+      this.formValueMap.containsKey(NewGamerEmailValueKey) &&
+      (newGamerEmailValue?.isNotEmpty ?? false);
   bool get hasPinValue =>
       this.formValueMap.containsKey(PinValueValueKey) &&
       (pinValueValue?.isNotEmpty ?? false);
 
+  bool get hasNewGamerEmailValidationMessage =>
+      this.fieldsValidationMessages[NewGamerEmailValueKey]?.isNotEmpty ?? false;
   bool get hasPinValueValidationMessage =>
       this.fieldsValidationMessages[PinValueValueKey]?.isNotEmpty ?? false;
 
+  String? get newGamerEmailValidationMessage =>
+      this.fieldsValidationMessages[NewGamerEmailValueKey];
   String? get pinValueValidationMessage =>
       this.fieldsValidationMessages[PinValueValueKey];
 }
 
 extension Methods on FormViewModel {
+  setNewGamerEmailValidationMessage(String? validationMessage) =>
+      this.fieldsValidationMessages[NewGamerEmailValueKey] = validationMessage;
   setPinValueValidationMessage(String? validationMessage) =>
       this.fieldsValidationMessages[PinValueValueKey] = validationMessage;
 }

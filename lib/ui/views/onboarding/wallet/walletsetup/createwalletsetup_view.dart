@@ -46,7 +46,7 @@ class CreateWalletSetupView extends StatelessWidget {
                         imageUrl: 'assets/images/infocardimage.png',
                         subtitle: "Don't have a wallet?",
                         title: "Create new wallet",
-                        onTap: (() => model.goToWalletPhrase()),
+                        onTap: (() => model.createWallet()),
                       ),
                       verticalSpaceLarge,
                       InfoCard(

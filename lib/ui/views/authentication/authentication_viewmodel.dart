@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:play_safe/app/app.locator.dart';
+import 'package:play_safe/app/app.logger.dart';
 import 'package:play_safe/app/app.router.dart';
-import 'package:play_safe/core/contants/constants.dart';
+import 'package:play_safe/core/models/data_query_model.dart';
+import 'package:play_safe/core/services/api_services.dart';
+import 'package:play_safe/core/services/local_storage/persistence_storage_service.dart';
+import 'package:play_safe/core/utils/validation_manager.dart';
+import 'package:play_safe/ui/views/authentication/authentication_view.form.dart';
+import 'package:play_safe/ui/views/onboarding/createaccount/createaccount_view.form.dart';
+
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-class AuthenticationViewModel extends BaseViewModel {
+class AuthenticationViewModel extends FormViewModel {
+  final log = getLogger("AuthenticationViewModel");
   final _navigationService = locator<NavigationService>();
+  final _persistentStorageService = locator<PersistentStorageService>();
+  final _apiService = locator<APIService>();
 
   final TextEditingController _controller = TextEditingController();
   TextEditingController get pinController => _controller;
@@ -51,15 +61,47 @@ class AuthenticationViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  void goToDash() {
+  onLogin() async {
     setBusy(true);
-    Future.delayed(longDuration, () {
-      _navigationService.clearStackAndShow(Routes.createWalletSetupView);
-      setBusy(false);
+    await _apiService.post(route: "new:main/tables/Users/query", body: {
+      "columns": ["*"]
+    }).then((value) async {
+      final records = dataQueryModelFromMap(value);
+      log.v(newGamerEmailValue);
+      log.v(_pinValue);
+      if (records!.records!
+              .any((element) => element!.gameremail == newGamerEmailValue) &&
+          records.records!.any((element) => element!.password == _pinValue)) {
+        var accountemail = records.records!
+            .firstWhere((element) => element!.gameremail == newGamerEmailValue)!
+            .gameremail;
+        var accountid = records.records!
+            .firstWhere((element) => element!.gameremail == newGamerEmailValue)!
+            .gamerid;
+
+        _persistentStorageService.saveUsername('gamerid', accountid!);
+        _persistentStorageService.saveUsername('gameremail', accountemail!);
+
+        _navigationService.clearStackAndShow(Routes.dashboardView);
+        log.v("can login");
+      } else {
+        log.v("cannot login");
+      }
+    }).onError((error, stackTrace) {
+      log.v(error);
+      log.v(stackTrace);
     });
+    setBusy(false);
   }
 
   void goBack() {
     _navigationService.back();
+  }
+
+  @override
+  void setFormStatus() {
+    log.v(newGamerEmailValue);
+    setGamerEmailValidationMessage(
+        emailAddressValidator(value: newGamerEmailValue ?? ""));
   }
 }

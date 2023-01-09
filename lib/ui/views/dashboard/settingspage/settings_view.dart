@@ -5,6 +5,7 @@ import 'package:play_safe/ui/shared/colors.dart';
 import 'package:play_safe/ui/shared/edge_insets.dart';
 import 'package:play_safe/ui/shared/spacing.dart';
 import 'package:play_safe/ui/views/dashboard/settingspage/settings_viewmodel.dart';
+import 'package:play_safe/ui/widgets/app_button.dart';
 import 'package:stacked/stacked.dart';
 
 class SettingsView extends StatelessWidget {
@@ -13,7 +14,7 @@ class SettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<SettingsViewModel>.reactive(
-      // onModelReady: (model) => model.init(),
+      onModelReady: (model) => model.init(),
       builder: (context, model, child) => SafeArea(
         top: false,
         bottom: false,
@@ -55,7 +56,7 @@ class SettingsView extends StatelessWidget {
                   ),
                   verticalSpaceMicro,
                   Text(
-                    "#009128378",
+                    "#${model.userid}",
                     style: GoogleFonts.montserrat(
                       fontWeight: FontWeight.w400,
                       fontSize: 14,
@@ -103,15 +104,19 @@ class SettingsView extends StatelessWidget {
                                   height: 1.0,
                                 ),
                               ),
-                              // Text(
-                              //   "Logout",
-                              //   style: GoogleFonts.montserrat(
-                              //     fontWeight: FontWeight.w400,
-                              //     fontSize: 14,
-                              //     height: 1.0,
-                              //     color: Colors.red,
-                              //   ),
-                              // ),
+                              AppButton(
+                                title: "Logout",
+                                padding: kEdgeInsetsHorizontalSmall,
+                                size: AppButtonSize.small,
+                                isBusy: model.isBusy,
+                                height: 40,
+                                width: 100,
+                                titleColor: Colors.red,
+                                backgroundColor: Colors.transparent,
+                                onTap: () {
+                                  model.logout();
+                                },
+                              ),
                             ],
                           ),
                           verticalSpaceSmall,
